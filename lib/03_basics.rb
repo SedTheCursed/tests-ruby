@@ -24,5 +24,5 @@ def array_42(array)
 end
 
 def magic_array(a)
-    a.flatten.sort.map!{|n| n*2}.select{ |n| n%3!=0}.uniqs
+    a.flatten.sort.map!{|n| n*2}.select{ |n| n%3!=0}.uniq
 end

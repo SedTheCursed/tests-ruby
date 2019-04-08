@@ -1,32 +1,37 @@
-def translate(s)
-    a = s.split(" ")
-    
-    a.each do |w|
-        if /[A-Z]/.match(w)
-            capitalized = true
-            w.downcase!
-        end
+def is_capitalized?(w)
+    if /[A-Z]/.match(w)
+        w.downcase!
+        true
+    end
+end
 
-        if /[\.,;\!\?:]+$/.match(w)
-            nb_c = 0
-            punctuated = true
-            w.length.times do |n|
-                nb_c += 1 if /[\.,;\!\?:]/.match(w[n])
-            end
-            punc = w.slice(w.length-(nb_c), nb_c)
-            w.sub!(punc, "")
+def is_punctuated?(w)
+    punctuated = {status: false}
+    if /[\.,;\!\?:]+$/.match(w)
+        nb_c = 0
+        punctuated[:status] = true
+        w.length.times do |n|
+            nb_c += 1 if /[\.,;\!\?:]/.match(w[n])
         end
+        punctuated[:string] = w.slice(w.length-(nb_c), nb_c)
+        w.sub!(punctuated[:string], "")
+    end
 
-        if /^[aeiouy]/i.match(w)
-            w << "ay"
-        elsif /^qu/i.match(w)
-            ml = w.slice("qu")
-            w.sub!("qu", "")
-            w << "quay"
+    punctuated
+end
+
+def slicing(w, d)
+    ml = d.class == String ? w.slice(d) : w.slice(d[0], d[1])
+    w.sub!(ml, "")
+    w << ml
+end
+
+def modification(w)
+    if /^[^aeiouy]/i.match(w)
+        if /^qu/i.match(w)
+            slicing(w, "qu")
         elsif /^[^aeiouy]qu/i.match(w)
-            ml = w.slice(0, 3)
-            w.sub!(ml, "")
-            w << ml + "ay"
+            slicing(w, [0, 3])
         else
             nb_c = 0
             w.length.times do |n|
@@ -36,13 +41,24 @@ def translate(s)
                     break
                 end
             end
-            ml = w.slice(0,nb_c)
-            w.sub!(ml, "")
-            w << ml + "ay"            
+            slicing(w,[0,nb_c])           
         end
+    end
+
+    w << "ay"
+end
+
+def translate(s)
+    a = s.split(" ")
+    
+    a.each do |w|
+        capitalized = is_capitalized?(w)
+        punctuated = is_punctuated?(w)
+
+        modification(w)
 
         w.capitalize! if capitalized
-        w << punc if punctuated
+        w << punctuated[:string] if punctuated[:status]
     end
 
     a.join(" ")            

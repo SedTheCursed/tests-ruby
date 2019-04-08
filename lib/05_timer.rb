@@ -1,12 +1,16 @@
+def stringify(s)
+    s < 10 ? "0" + s.to_s : s
+end
+
 def time_string(t)
     h = t/3600
-    h = h < 10 ? "0" + h.to_s : h
+    h = stringify(h)
 
     m = t % 3600 /60
-    m = m < 10 ? "0" + m.to_s : m
+    m = stringify(m)
 
     s = t % 60
-    s = s < 10 ? "0" + s.to_s : s
+    s = stringify(s)
 
     "#{h}:#{m}:#{s}"
 end
