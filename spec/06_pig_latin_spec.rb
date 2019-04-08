@@ -48,6 +48,14 @@ describe "#translate" do
 
   # Test-driving bonus:
   # * write a test asserting that capitalized words are still capitalized (but with a different initial capital letter, of course)
-  # * retain the punctuation from the original phrase
+  it "translate words keeping the capitalization" do
+    s = translate("The Empire strikes back")
+    expect(s).to eq("Ethay Empireay ikesstray ackbay")
+  end
 
+  # * retain the punctuation from the original phrase
+  it "translate words, keeping the punctuation" do
+    s = translate("The Best Team: Anne Tahina, Cedric, Noel.")
+    expect(s).to eq("Ethay Estbay Eamtay: Anneay Ahinatay, Edriccay, Oelnay.")
+  end
 end
